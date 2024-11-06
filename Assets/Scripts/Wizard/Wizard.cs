@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Wizard : MonoBehaviour
+public class Wizard : MonoBehaviour, Hurtable
 {
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject range;
@@ -48,6 +48,7 @@ public class Wizard : MonoBehaviour
         
     }
 
+    public void hurt(int damage)
     public void WizardToShoot(Wizard wizard)
     {
         if (activeTarget == null && wizard.CurrentTeam != team)
@@ -63,5 +64,3 @@ public class Wizard : MonoBehaviour
 
     }
 }
-
-public enum Teams { TEAM1, TEAM2 };
