@@ -1,0 +1,1 @@
+public enum Teams { TEAM1, TEAM2 };

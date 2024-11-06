@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Wizard : MonoBehaviour
+public class Wizard : MonoBehaviour, Hurtable
 {
     [SerializeField] private GameObject HealthBar;
     private Teams curentTeam;
@@ -21,10 +21,8 @@ public class Wizard : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void hurt(int damage)
     {
-        
+
     }
 }
-
-public enum Teams { TEAM1, TEAM2 };
