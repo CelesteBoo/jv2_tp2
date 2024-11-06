@@ -47,8 +47,6 @@ public class Wizard : MonoBehaviour, Hurtable
         gameObject.transform.position += new Vector3(speed, speed);
         
     }
-
-    public void hurt(int damage)
     public void WizardToShoot(Wizard wizard)
     {
         if (activeTarget == null && wizard.CurrentTeam != team)
@@ -60,6 +58,10 @@ public class Wizard : MonoBehaviour, Hurtable
     }
 
     public void TowerToShoot(GameObject tower)
+    {
+
+    }
+    public void hurt(int damage)
     {
 
     }
