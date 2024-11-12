@@ -2,19 +2,37 @@ using UnityEngine;
 
 public class Finder : MonoBehaviour
 {
+<<<<<<< HEAD
     private static ObjectPool wizardObjectPool;
     private static ObjectPool blueSpellPool;
     private static ObjectPool greenSpellPool;   
+=======
+    private static ObjectPool blueWizardObjectPool;
+    private static ObjectPool greenWizardObjectPool;
+    private static ObjectPool spellPool;
+>>>>>>> b2aa3a87651c020bcb521284d4a9ab0a6a27c39c
 
-    public static ObjectPool WizardObjectPool
+    public static ObjectPool BlueWizardObjectPool
     {
         get
         {
-            if (wizardObjectPool == null)
+            if (blueWizardObjectPool == null)
             {
-                wizardObjectPool = GameObject.Find("WizardObjectPool").GetComponent<ObjectPool>();
+                blueWizardObjectPool = GameObject.Find("BlueWizardObjectPool").GetComponent<ObjectPool>();
             }
-            return wizardObjectPool;
+            return blueWizardObjectPool;
+        }
+    }
+
+    public static ObjectPool GreenWizardObjectPool
+    {
+        get
+        {
+            if (greenWizardObjectPool == null)
+            {
+                greenWizardObjectPool = GameObject.Find("GreenWizardObjectPool").GetComponent<ObjectPool>();
+            }
+            return greenWizardObjectPool;
         }
     }
 
