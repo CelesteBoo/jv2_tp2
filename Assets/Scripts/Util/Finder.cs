@@ -3,7 +3,8 @@ using UnityEngine;
 public class Finder : MonoBehaviour
 {
     private static ObjectPool wizardObjectPool;
-    private static ObjectPool spellPool;
+    private static ObjectPool blueSpellPool;
+    private static ObjectPool greenSpellPool;   
 
     public static ObjectPool WizardObjectPool
     {
@@ -17,15 +18,27 @@ public class Finder : MonoBehaviour
         }
     }
 
-    public static ObjectPool SpellPool
+    public static ObjectPool BlueSpellPool
     {
         get
         {
-            if (spellPool == null)
+            if (blueSpellPool == null)
             {
-                spellPool = GameObject.Find("SpellPool").GetComponent<ObjectPool>();
+                blueSpellPool = GameObject.Find("BlueSpellPool").GetComponent<ObjectPool>();
             }
-            return spellPool;
+            return blueSpellPool;
+        }
+    }
+
+    public static ObjectPool GreenSpellPool
+    {
+        get
+        {
+            if (greenSpellPool == null)
+            {
+                greenSpellPool = GameObject.Find("GreenSpellPool").GetComponent<ObjectPool>();
+            }
+            return greenSpellPool;
         }
     }
 
