@@ -11,6 +11,7 @@ public class Tower : MonoBehaviour, Hurtable
     private int health;
 
     public bool IsDead => isDead;
+    public Teams CurrentTeam => team;
 
     void Awake()
     {
@@ -18,7 +19,7 @@ public class Tower : MonoBehaviour, Hurtable
         health = rnd.Next(minHealth, maxHealth);
     }
 
-    public void hurt(int damage)
+    public bool hurt(int damage)
     {
         health -= damage;
         if (health <= 0)
@@ -26,5 +27,6 @@ public class Tower : MonoBehaviour, Hurtable
             isDead = true;
             Destroy(gameObject);
         }
+        return isDead;
     }
 }

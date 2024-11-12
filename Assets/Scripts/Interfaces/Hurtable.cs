@@ -1,4 +1,6 @@
+using UnityEngine;
+
 public interface Hurtable
 {
-    public void hurt(int damage);
+    public bool hurt(int damage);
 }

@@ -2,67 +2,90 @@ using UnityEngine;
 
 public class Wizard : MonoBehaviour, Hurtable
 {
+    [Header("Prefabs")]
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private GameObject range;
+    [Header("Stats")]
     [SerializeField] private int health = 100;
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private Teams team;
 
-
-    private Teams curentTeam;
     private WizardBlackboard blackBoard;
-    private Wizard activeTarget;
+    private ObjectPool wizardObjectPool;
+    private WizardManager manager;
+
+    private Hurtable target;
+    [SerializeField] private Tower baseTarget;
+    private IWizardState state;
+
+    private Rigidbody2D rigidBody;
 
     public Teams CurrentTeam => team;
     public int CurrentHP => health;
+
+    public Hurtable Target => target;
     
     void Awake()
     {
         blackBoard = new WizardBlackboard(new WizardNormalState(), new WizardIntrepidState(), new WizardFleeState(), new WizardHideState(), new WizardSafeState());
+        state = blackBoard.NormalState;
+
+        if (team == Teams.TEAM1)
+        {
+            wizardObjectPool = Finder.BlueWizardObjectPool;
+        }
+        else
+        {
+            wizardObjectPool = Finder.GreenWizardObjectPool;
+        }
+        
+        rigidBody = GetComponent<Rigidbody2D>();
     }
 
-    public void SetTeam(Teams team)
+    public void SetBaseTarget(Tower tower)
     {
-        curentTeam = team;
-    }
-
-    public void SetBaseTarget(GameObject tower)
-    {
-
+        baseTarget = tower;
     }
 
     void Update()
     {
-        if (activeTarget != null)
+        if (health <= 0)
         {
-            //shoot target
-            if (activeTarget.CurrentHP <= 0)
-            {
-                activeTarget = null;
-            }
             
-            return;
         }
-        
-        gameObject.transform.position += new Vector3(speed, speed);
-        
+
+        if (baseTarget.IsDead)
+        {
+            //change base target
+        }
+        state.update(this, blackBoard);
     }
     public void WizardToShoot(Wizard wizard)
     {
-        if (activeTarget == null && wizard.CurrentTeam != team)
+        if (target == null && wizard.CurrentTeam != team)
         {
-            activeTarget = wizard;
+            target = wizard;
         }
-        Debug.Log(wizard.CurrentTeam);
-        Debug.Log(team);
     }
 
-    public void TowerToShoot(GameObject tower)
+    public void TowerToShoot(Tower tower)
     {
+        if (target == null && tower.CurrentTeam != team)
+        {
+            target = tower;
 
+        }
     }
-    public void hurt(int damage)
-    {
 
+    public void MoveTowardTarget()
+    {
+        Vector3 direction = baseTarget.transform.position - gameObject.transform.position;
+        rigidBody.linearVelocity = direction.normalized * Time.deltaTime;
+    }
+
+    public bool hurt(int damage)
+    {
+        health -= damage;
+        return health <= 0;
     }
 }
