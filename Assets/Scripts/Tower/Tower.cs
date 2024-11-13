@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Tower : MonoBehaviour, Hurtable
+public class Tower : MonoBehaviour, Hurtable, HidingSpot
 {
     [SerializeField] private GameObject HealthBar;
     [SerializeField] private int minHealth = 800;
@@ -19,7 +19,7 @@ public class Tower : MonoBehaviour, Hurtable
         health = rnd.Next(minHealth, maxHealth);
     }
 
-    public bool hurt(int damage)
+    public void hurt(int damage)
     {
         health -= damage;
         if (health <= 0)
@@ -27,6 +27,31 @@ public class Tower : MonoBehaviour, Hurtable
             isDead = true;
             Destroy(gameObject);
         }
-        return isDead;
+    }
+
+    public bool isAlive()
+    {
+        return !isDead;
+    }
+
+    public Vector3 getPosition()
+    {
+        return gameObject.transform.position;
+    }
+
+    public Teams getTeam()
+    {
+        return team;
+    }
+
+    public float getDistanceFromPosition(Vector3 position)
+    {
+        Vector3 distance = gameObject.transform.position - position;
+        return distance.magnitude;
+    }
+
+    public float getPositionX()
+    {
+        return gameObject.transform.position.x;
     }
 }

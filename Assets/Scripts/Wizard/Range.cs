@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.WSA;
 
 public class Range : MonoBehaviour
 {
@@ -7,10 +8,16 @@ public class Range : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var other = collision.GetComponent<Wizard>();
-        if (other != null)
+        var otherWiz = collision.GetComponent<Wizard>();
+        if (otherWiz != null)
         {
-            wizard.WizardToShoot(other);
+            wizard.SetActiveTarget(otherWiz);
+            return;
+        }
+        var otherTower = collision.GetComponent<Tower>();
+        if (otherTower != null)
+        {
+            wizard.SetActiveTarget(otherTower);
             return;
         }
     }

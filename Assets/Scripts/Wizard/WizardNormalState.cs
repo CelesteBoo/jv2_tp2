@@ -8,17 +8,20 @@ public class WizardNormalState : IWizardState
         
     }
 
-    public IWizardState update(Wizard wizard, WizardBlackboard blackBoard)
+    public IWizardState Update(Wizard wizard, WizardBlackboard blackBoard)
     {
-        Debug.Log("Yes1");
-        Hurtable target = wizard.Target;
-        if (target == null)
+        if (wizard.CurrentHP <= wizard.MaxHP * 0.25f)
         {
-            wizard.MoveTowardTarget();   
+            Debug.Log("FLEEING");
+            return blackBoard.FleeState;
         }
-        else if (!target.hurt(10))
+        else if (wizard.ActiveTarget == null)
         {
-            
+            wizard.MoveTowardBaseTarget();   
+        }
+        else
+        {
+            wizard.fire();
         }
         return this;
     }

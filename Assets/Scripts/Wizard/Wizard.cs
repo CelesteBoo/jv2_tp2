@@ -3,30 +3,39 @@ using UnityEngine;
 public class Wizard : MonoBehaviour, Hurtable
 {
     [Header("Prefabs")]
-    [SerializeField] private GameObject HealthBar;
+    [SerializeField] private GameObject healthBar;
     [SerializeField] private GameObject range;
     [Header("Stats")]
-    [SerializeField] private int health = 100;
-    [SerializeField] private float speed = 0.1f;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private float baseSpeed = 200;
     [SerializeField] private Teams team;
-    [SerializeField] private float refireCheck = 2f;
+    [SerializeField] private float fireRate = 2;
 
     private WizardBlackboard blackBoard;
     private ObjectPool wizardObjectPool;
     private ObjectPool spells;
     private WizardManager manager;
-    private float defaultRefireCheck;
+    
 
-    private Hurtable target;
-    [SerializeField] private Tower baseTarget;
+    private Hurtable activeTarget;
+    private Tower baseTarget;
     private IWizardState state;
 
     private Rigidbody2D rigidBody;
 
+    private int health;
+    private float fireRateTimer;
+    private float healthBarMaxScale;
+
     public Teams CurrentTeam => team;
     public int CurrentHP => health;
+    public int MaxHP => maxHealth;
 
-    public Hurtable Target => target;
+    public float BaseSpeed => baseSpeed;
+
+    public float FireRateTimer => fireRateTimer;
+
+    public Hurtable ActiveTarget => activeTarget;
     
     void Awake()
     {
@@ -38,8 +47,6 @@ public class Wizard : MonoBehaviour, Hurtable
         else
             spells = Finder.GreenSpellPool;
 
-        defaultRefireCheck = refireCheck;
-
         if (team == Teams.TEAM1)
         {
             wizardObjectPool = Finder.BlueWizardObjectPool;
@@ -48,60 +55,98 @@ public class Wizard : MonoBehaviour, Hurtable
         {
             wizardObjectPool = Finder.GreenWizardObjectPool;
         }
+
+        manager = Finder.WizardManager;
         
         rigidBody = GetComponent<Rigidbody2D>();
+
+        health = maxHealth;
+        healthBarMaxScale = healthBar.transform.lossyScale.x;
+        baseTarget = manager.getRandomEnemyTower(team);
+        fireRateTimer = fireRate;
     }
 
-    public void SetBaseTarget(Tower tower)
+    private void Update()
     {
-        baseTarget = tower;
-    }
-
-    public void WizardToShoot(Wizard wizard)
-    {
-        if (target == null && wizard.CurrentTeam != team)
+        if (activeTarget != null && !activeTarget.isAlive())
         {
-            target = wizard;
+            activeTarget = null;
         }
-    }
-
-    public void TowerToShoot(Tower tower)
-    {
-        if (target == null && tower.CurrentTeam != team)
-        {
-            target = tower;
-
-        }
-    }
-
-    public void MoveTowardTarget()
-    {
-        Vector3 direction = baseTarget.transform.position - gameObject.transform.position;
-        rigidBody.linearVelocity = direction.normalized * Time.deltaTime;
-    }
-
-    public bool hurt(int damage)
-    {
-        health -= damage;
-
         if (baseTarget.IsDead)
         {
-            //change base target
+            baseTarget = manager.getRandomEnemyTower(team);
         }
-        state.update(this, blackBoard);
 
-        return health <= 0;
+        float percentHealth = health / maxHealth;
+        if (percentHealth < 0)
+        {
+            percentHealth = 0;
+        }
+        healthBar.transform.localScale = new Vector3(healthBar.transform.localScale.y, healthBarMaxScale * percentHealth);
+
+        fireRateTimer -= Time.deltaTime;
+
+        var nextState = state.Update(this, blackBoard);
+        if (nextState != state)
+        {
+            state.Leave(this, blackBoard);
+            state = nextState;
+            state.Enter(this, blackBoard);
+        }
     }
 
-    private void fire()
+    public void SetActiveTarget(Hurtable target)
     {
-        var spell = spells.Get().GetComponent<Projectile>();
-        if (spell != null)
+        if (activeTarget == null && target.getTeam() != team)
         {
-            spell.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            activeTarget = target;
         }
-        //doit être fix
-        spell.setDirection(target.position - rigidBody.position);
-        refireCheck = defaultRefireCheck;
+    }
+
+    public void MoveTowards(Vector3 position)
+    {
+        Vector3 direction = position - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x);
+        rigidBody.rotation = angle;
+        transform.position = Vector3.MoveTowards(transform.position, position, Time.deltaTime * baseSpeed);
+    }
+
+    public void MoveTowardBaseTarget()
+    {
+        MoveTowards(baseTarget.transform.position);
+    }
+
+    public void hurt(int damage)
+    {
+        health -= damage;
+    }
+
+    public void fire()
+    {
+        if (fireRateTimer <= 0)
+        {
+            var spell = spells.Get().GetComponent<Projectile>();
+            if (spell != null)
+            {
+                spell.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            }
+            spell.setDirection(activeTarget.getPosition() - gameObject.transform.position);
+            fireRateTimer = fireRate;
+        }
+    }
+
+    public bool isAlive()
+    {
+        return health > 0;
+    }
+
+    public Vector3 getPosition()
+    {
+        return gameObject.transform.position;
+    }
+
+    public Teams getTeam()
+    {
+        return team;
     }
 }

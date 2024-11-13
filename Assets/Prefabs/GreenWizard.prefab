@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ae5a58eb2de08a4282e3543d344d4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wizard: {fileID: 0}
+  wizard: {fileID: 6784980629439279103}
 --- !u!1 &7819407854541498788
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,12 +291,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0be3cf4777a2f24fb164ac393968d11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthBar: {fileID: 4651214311974509697, guid: 1452bdc790f467a48b07790a5134229c, type: 3}
+  healthBar: {fileID: 5171125381301596363}
   range: {fileID: 7409515500789464669}
-  health: 100
-  speed: 0.1
+  maxHealth: 100
+  baseSpeed: 1
   team: 1
-  baseTarget: {fileID: 0}
+  fireRate: 2
 --- !u!61 &1808464636285941232
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -567,6 +567,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f774ceaa6986c446b29eaac33c83ec3, type: 3}
+--- !u!1 &5171125381301596363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2141985312937677777, guid: 6f774ceaa6986c446b29eaac33c83ec3, type: 3}
+  m_PrefabInstance: {fileID: 6519623921040220954}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8335584680489579542 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3015064789240583948, guid: 6f774ceaa6986c446b29eaac33c83ec3, type: 3}

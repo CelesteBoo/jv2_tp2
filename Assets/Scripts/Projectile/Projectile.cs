@@ -5,11 +5,11 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] private int minDmg = 8;
     [SerializeField] private int maxDmg = 12;
-    [SerializeField] private float speed = 0.5f;
+    [SerializeField] private float speed = 4f;
     [SerializeField] private float timeToLive = 9f;
     [SerializeField] private Teams team;
     private int damage;
-    private Vector2 direction;
+    private Vector3 direction;
     private ObjectPool pool;
     private new Rigidbody2D rigidbody;
     private float maxTimeToLive;
@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        rigidbody.position += (direction * speed) * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, direction, Time.deltaTime * speed);
         timeToLive -= Time.deltaTime;
         if (timeToLive <= 0)
             pool.Release(gameObject);
@@ -45,8 +45,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void setDirection(Vector2 direction)
+    public void setDirection(Vector3 direction)
     {
-        this.direction = direction;
+        rigidbody.linearVelocity = direction;
+    }
+    public void setRotation(Vector3 rotation)
+    {
+        transform.forward = rotation;
     }
 }

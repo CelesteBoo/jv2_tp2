@@ -7,7 +7,7 @@ public class WizardSafeState : IWizardState
         
     }
 
-    public IWizardState update(Wizard wizard, WizardBlackboard blackBoard)
+    public IWizardState Update(Wizard wizard, WizardBlackboard blackBoard)
     {
         
         return this;

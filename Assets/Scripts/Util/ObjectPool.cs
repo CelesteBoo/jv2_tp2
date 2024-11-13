@@ -3,7 +3,7 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     [SerializeField] private GameObject prefab;
-    [SerializeField, Min(1)] private int objectCount = 20;
+    [SerializeField, Min(1)] private int objectCount = 100;
 
     private void Awake()
     {
